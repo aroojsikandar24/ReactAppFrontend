@@ -7,6 +7,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import AboutUs from './components/AboutUs'
 import ContactUs from './components/ContactUs'
+import BlogForm from './components/Blog/BlogForm'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/blog-detail/:id" element={<BlogDetail />} />
           <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="/ContactUs" element={<ContactUs />} />
+          <Route path="/BlogForm" element={<BlogForm />} />
         </Routes>
       </div>
 

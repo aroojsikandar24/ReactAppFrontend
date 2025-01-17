@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import IntroPost from '../components/IntroPost';
 import Search from '../components/Search';
-import GlobalApi from '../services/GlobalApi';
-import Blogs from '../components/Blogs';
+import { getPost } from '../services/GlobalApi';
+import BlogList from '../components/Blog/BlogList';
+import { useNavigate } from 'react-router-dom';
 
 interface Post {
   id: number;
@@ -14,16 +15,18 @@ interface Post {
 }
 
 const Home = () => {
+
+  const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const [orgPost, setOrgPost] = useState<Post[]>([]);
 
   useEffect(() => {
-    getPost();
+    fetchPosts(); 
   }, []);
 
-  const getPost = async () => {
+  const fetchPosts = async () => { 
     try {
-      const response = await GlobalApi.getPost();
+      const response = await getPost();
       const result = response.data.map((item: Post) => ({
         id: item.id,
         title: item.title,
@@ -41,24 +44,29 @@ const Home = () => {
 
   const filterPost = (tag: string) => {
     if (tag === 'All') {
-      setPosts(orgPost); // Reset to all posts
+      setPosts(orgPost); 
       return;
     }
-  
+
     const result = orgPost.filter((item: Post) =>
-      item.tags.split(',').map(t => t.trim()).includes(tag)
+      item.tags.split(',').map((t) => t.trim()).includes(tag)
     );
-  
+
     setPosts(result);
   };
-  
 
   return (
-    <div className="p-[20px]">
+    <div className="relative p-[20px]">
       <Search selectedTag={(tag: string) => filterPost(tag)} />
       {posts.length > 0 ? <IntroPost post={posts[0]} /> : null}
-      {posts.length > 0 ? <Blogs posts={posts} /> : null}
-    </div>
+      {posts.length > 0 ? <BlogList posts={posts} /> : null}
+
+      <div className="absolute bottom-4 right-4">
+        <button className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300" onClick={() => navigate('/BlogForm')}>
+          Create New Post
+        </button>
+      </div>
+    </div> 
   );
 };
 

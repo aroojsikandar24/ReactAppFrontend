@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
-function Blogs({ posts }: { posts: any[] }) { // Destructure posts from props and define its type
+function BlogList({ posts }: { posts: any[] }) { // Destructure posts from props and define its type
   const navigate = useNavigate()
 
   if (!Array.isArray(posts)) {
@@ -47,4 +47,4 @@ function Blogs({ posts }: { posts: any[] }) { // Destructure posts from props an
   )
 }
 
-export default Blogs
+export default BlogList

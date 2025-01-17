@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import GlobalApi from '../services/GlobalApi';
-// import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
+import {getPostById} from '../services/GlobalApi';
 
 interface Post {
   id: number;
@@ -12,8 +11,8 @@ interface Post {
 }
 
 const BlogDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // Use type annotation for params
-  const [post, setPost] = useState<Post | null>(null); // Use `Post | null` for type safety
+  const { id } = useParams<{ id: string }>(); 
+  const [post, setPost] = useState<Post | null>(null); 
 
   useEffect(() => {
     if (id) {
@@ -24,7 +23,7 @@ const BlogDetail: React.FC = () => {
 
   const getBlogById = async () => {
     try {
-      const resp = await GlobalApi.getPostById(id); // Ensure `id` is passed as a parameter
+      const resp = await getPostById(id); 
       const item = resp.data;
       const result: Post = {
         id: item.id,
@@ -41,7 +40,7 @@ const BlogDetail: React.FC = () => {
   };
 
   if (!post) {
-    return <div>Loading...</div>; // Display a loader or fallback UI while the data is being fetched
+    return <div>Loading...</div>; 
   }
 
   return (
@@ -65,7 +64,6 @@ const BlogDetail: React.FC = () => {
         alt="Blog Cover"
       />
       <div>{post.description}</div>
-      {/* <ReactMarkdown children={post.desc} escapeHtml={false} className="leading-9" /> */}
     </div>
   );
 };

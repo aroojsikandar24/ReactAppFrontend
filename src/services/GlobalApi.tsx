@@ -1,13 +1,19 @@
 import axios from "axios";
 
-
-// const BASE_URL='http://localhost:1337/api';
 const BASE_URL='http://localhost:7010/api'; 
 
-const getPost = () => axios.get(BASE_URL + '/Blog');
-const getPostById= (id: any)  => axios.get(BASE_URL+'/Blog/'+id+'');
 
-export default{
-    getPost,
-    getPostById
+export const getPost = () => {
+    return axios.get(BASE_URL+'/Blog');
 }
+
+export const getPostById = (id: any) => {
+    return axios.get(BASE_URL+'/Blog/'+id+'');
+}
+
+export const createPost = (formData: FormData) => {
+    return axios.post(`${BASE_URL}/Blog`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+});}

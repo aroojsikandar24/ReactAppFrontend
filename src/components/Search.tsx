@@ -36,7 +36,7 @@ const Search: React.FC<SearchProps> = ({ selectedTag }) => {
             key={item.id}
             onClick={() => {
               setActiveIndex(index);
-              selectedTag(item.name); // Call the function
+              selectedTag(item.name); 
             }}
             className={`${
               index === activeIndex ? 'bg-red-500 text-white' : ''
