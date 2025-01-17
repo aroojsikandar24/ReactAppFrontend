@@ -1,62 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import IntroPost from '../components/IntroPost';
+import { useEffect, useState } from 'react';
 import Header from '../components/Header';
+import IntroPost from '../components/IntroPost';
 import Search from '../components/Search';
-import Blogs from '../components/Blogs';
-import Footer from '../components/Footer';
 import GlobalApi from '../services/GlobalApi';
+import Blogs from '../components/Blogs';
 
-function Home() {
-    const [post,setPost] = useState([]);
-    const [orgPost,setOrgPost] = useState([]);
-
-    useEffect(() => {
-        getPost();
-    }, [])
-  
-    const getPost = () => {
-        GlobalApi.getPost.then(resp => {
-            const result = resp.data.data.map((item: any) => ({
-                id: item.id,
-                title: item.attributes.title,
-                desc: item.attributes.description,
-                tag: item.attributes.tag,
-                coverImage: item.attributes.coverImage.data.attributes.url,
-            }));
-
-            setPost(result);
-            setOrgPost(result);
-        })
-    }
-
-    const filterPost=(tag: string)=>{
-        if(tag=='All')
-        {
-          setPost(orgPost);
-          return ;
-        }
-        const result=orgPost.filter((item: any) => item.tag == tag);
-        setPost(result);
-    }
-
-    return(
-        <div>
-            {/* Header */}
-            <Header/>
-
-            {/* Search */}
-            <Search selectedTag={(tag: string) => filterPost(tag)}/>
-
-            {/* IntroPost */}
-            {post.length > 0 ? <IntroPost post={post[0]}/> : null}
-
-            {/* Blogs */}
-            <Blogs/>
-
-            {/* Footer */}
-            <Footer/>
-        </div>
-    )      
+interface Post {
+  id: number;
+  title: string;
+  description: string;
+  tags: string;
+  coverImage: string | null;
 }
 
-export default Home
+const Home = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [orgPost, setOrgPost] = useState<Post[]>([]);
+
+  useEffect(() => {
+    getPost();
+  }, []);
+
+  const getPost = async () => {
+    try {
+      const response = await GlobalApi.getPost();
+      const result = response.data.map((item: Post) => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        tags: item.tags,
+        coverImage: item.coverImage,
+      }));
+
+      setPosts(result);
+      setOrgPost(result);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
+
+  const filterPost = (tag: string) => {
+    if (tag === 'All') {
+      setPosts(orgPost); // Reset to all posts
+      return;
+    }
+  
+    const result = orgPost.filter((item: Post) =>
+      item.tags.split(',').map(t => t.trim()).includes(tag)
+    );
+  
+    setPosts(result);
+  };
+  
+
+  return (
+    <div className="p-[20px]">
+      <Search selectedTag={(tag: string) => filterPost(tag)} />
+      {posts.length > 0 ? <IntroPost post={posts[0]} /> : null}
+      {posts.length > 0 ? <Blogs posts={posts} /> : null}
+    </div>
+  );
+};
+
+export default Home;
